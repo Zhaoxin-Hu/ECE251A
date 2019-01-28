@@ -16,6 +16,8 @@ den = [1, -2.76, 3.809, -2.654, 0.924];
 sys = filt(num, den);
 % [impResp, n] = impulse(sys);
 
+% generate system H~
+
 % output of the system to input
 [x, nx] = lsim(sys, w, nw);
 xx = fliplr(x);
@@ -25,7 +27,9 @@ rHatww = 1/N*conv(w, ww);
 rHatxx = 1/N*conv(x, xx);
 
 % frequency reponse of the filter
-% [freqResp, wsys] = freqz()
+[freqResp, wsys] = freqz(num, den, 1e3);
+freqRespdB = 20*log10(abs(freqResp));
+freqRespdBNorm = freqRespdB - max(freqRespdB);
 
 % periodogram of w and x
 % [pww, omegaw] = periodogram(w);
@@ -41,20 +45,22 @@ rHatxx = 1/N*conv(x, xx);
 % legend('\hat{r}_ww', '\hat{r}_xx')
 
 % plot frequency response of the filter
-plot(wsys/pi,20*log10(abs(freqResp)))
+plot(wsys/pi,freqRespdB)
 ax = gca;
-ax.YLim = [-100 20];
+% ax.YLim = [-100 20];
 ax.XTick = 0:.5:2;
 xlabel('Normalized Frequency (\times\pi rad/sample)')
 ylabel('Magnitude (dB)')
 
 % plot periodogram
-% periodogram(w)
-% periodogram(x)
+figure
+periodogram(w)
+hold on
+periodogram(x)
 % plot(omegaw, pww)
 % hold on
 % plot(RHatxx)
-% hold off
+hold off
 % legend('\hat{R}_ww', '\hat{R}_xx')
 
 % other useful functions
