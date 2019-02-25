@@ -3,19 +3,17 @@ clf
 close all
 clearvars
 
-rww = [0.3];
-h1 = [1,-0.8];
-rss = conv(conv(rww,h1),conj(fliplr(h1)));
-h2 = [1,-0.9];
-ryy = conv(conv(rss,h2),conj(fliplr(h2)));
-rvv = [0,0,0.1,0,0];
-rxx = ryy+rvv;
-Rxx = [rxx(3:end);rxx(2:4);rxx(1:3)];
-Ryx = [rss(1)-0.9*rss(2),rss(2),0];
-Rxy = Ryx';
-Ryy = rss(2);
+r0 = 1.42252;
+r1 = -0.8772;
+r2 = 0.216;
 
-CoH = Ryx*inv(Rxx);
-Co = CoH';
-P = Ryy-Ryx*Co;
+RXX = [r0,r1,r2;r1,r0,r1;r2,r1,r0];
+RYY = 0.492;
+RXY = [0.708;-0.24;0];
+RYX = RXY';
+
+CoH = RYX*inv(RXX);
+Co = inv(RXX)*RXY;
+P = RYY+CoH*RXX*Co-RYX*Co-CoH*RXY;
+% P = RYY-RYX*Co;
 % P = rss(2)-Ryx*inv(Rxx)*Rxy;
